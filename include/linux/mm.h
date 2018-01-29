@@ -2112,6 +2112,7 @@ void drop_pagecache_sb(struct super_block *sb, void *unused);
 unsigned long shrink_slab(struct shrink_control *shrink,
 			  unsigned long nr_pages_scanned,
 			  unsigned long lru_pages);
+void drop_pagecache(void); //james.hong add for drop page cache in time
 
 #ifndef CONFIG_MMU
 #define randomize_va_space 0

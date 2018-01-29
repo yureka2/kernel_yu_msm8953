@@ -52,9 +52,9 @@
 #include "debug.h"
 #include "xhci.h"
 
-#define DWC3_IDEV_CHG_MAX 1500
-#define DWC3_HVDCP_CHG_MAX 1800
-
+#define DWC3_IDEV_CHG_MAX 2000//bug 197166 xuji.wt 20160716 disable thermal for MTBF test
+#define DWC3_HVDCP_CHG_MAX 2000//bug 197166 xuji.wt 20160716 disable thermal for MTBF test
+#define DWC3_IDEV_SDP_CHG_MAX 500
 /* AHB2PHY register offsets */
 #define PERIPH_SS_AHB2PHY_TOP_CFG 0x10
 
@@ -3632,6 +3632,8 @@ static void dwc3_otg_sm_work(struct work_struct *w)
 				 * OTG_STATE_B_PERIPHERAL state on cable
 				 * disconnect or in bus suspend.
 				 */
+				 dwc3_msm_gadget_vbus_draw(mdwc,
+						500);
 				pm_runtime_get_sync(mdwc->dev);
 				dbg_event(0xFF, "CHG gsync",
 					atomic_read(

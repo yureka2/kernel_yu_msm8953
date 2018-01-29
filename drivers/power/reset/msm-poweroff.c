@@ -60,7 +60,11 @@ static void scm_disable_sdi(void);
 * There is no API from TZ to re-enable the registers.
 * So the SDI cannot be re-enabled when it already by-passed.
 */
+#ifdef WT_DLOAD_MODE_SUPPORT
 static int download_mode = 1;
+#else
+static int download_mode = 0;
+#endif
 #else
 static const int download_mode;
 #endif
@@ -323,7 +327,9 @@ static void msm_restart_prepare(const char *cmd)
 			qpnp_pon_set_restart_reason(
 				PON_RESTART_REASON_KEYS_CLEAR);
 			__raw_writel(0x7766550a, restart_reason);
-		} else if (!strncmp(cmd, "oem-", 4)) {
+		} else if (!strncmp(cmd, "fastmmi", 7)){	
+			       __raw_writel(0x77665505, restart_reason);				
+		}else if (!strncmp(cmd, "oem-", 4)) {
 			unsigned long code;
 			int ret;
 			ret = kstrtoul(cmd + 4, 16, &code);
