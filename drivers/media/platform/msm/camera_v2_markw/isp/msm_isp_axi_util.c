@@ -3689,7 +3689,7 @@ int msm_isp_update_axi_stream(struct vfe_device *vfe_dev, void *arg)
 					cfg_wm_reg(vfe_dev, stream_info, j);
 			}
 		}
-		break;
+/*		break;
 	}
 	case UPDATE_STREAM_REQUEST_FRAMES_VER2: {
 		struct msm_vfe_axi_stream_cfg_update_info_req_frm *req_frm =
@@ -3707,7 +3707,7 @@ int msm_isp_update_axi_stream(struct vfe_device *vfe_dev, void *arg)
 			req_frm->buf_index);
 		if (rc)
 			pr_err("%s failed to request frame!\n",
-				__func__);
+				__func__);*/
 		break;
 	}
 	default:

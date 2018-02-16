@@ -437,8 +437,6 @@ static int32_t msm_flash_i2c_write_setting_array(
 	return rc;
 }
 
-struct msm_flash_ctrl_t *flash_ctrl_wt = NULL;
-
 static int32_t msm_flash_init(
 	struct msm_flash_ctrl_t *flash_ctrl,
 	struct msm_flash_cfg_data_t *flash_data)
@@ -581,7 +579,7 @@ static int32_t msm_flash_low(
 			led_trigger_event(flash_ctrl->flash_trigger[i], 0);
 
 	/* Turn on flash triggers */
-	for (i = 0; i < flash_ctrl->torch_num_sources - 1; i++) {
+	for (i = 0; i < flash_ctrl->torch_num_sources; i++) {
 		if (flash_ctrl->torch_trigger[i]) {
 			max_current = flash_ctrl->torch_max_current[i];
 			if (flash_data->flash_current[i] >= 0 &&
@@ -604,7 +602,7 @@ static int32_t msm_flash_low(
 	return 0;
 }
 
-int32_t wt_flash_flashlight(bool boolean)
+/*int32_t wt_flash_flashlight(bool boolean)
 {
 	uint32_t curr = 0;
 	int32_t i = 0;
@@ -615,10 +613,10 @@ int32_t wt_flash_flashlight(bool boolean)
 		curr = 0;
 
 	if (flash_ctrl_wt) {
-	CDBG("WT Enter\n");
+	CDBG("WT Enter\n");*/
 
 	/* Turn on flash triggers */
-	CDBG("WT_XJB  flash_ctrl_wt->torch_num_sources = %d", flash_ctrl_wt->torch_num_sources);
+/*	CDBG("WT_XJB  flash_ctrl_wt->torch_num_sources = %d", flash_ctrl_wt->torch_num_sources);
 	for (i = 0; i < flash_ctrl_wt->torch_num_sources - 1; i++) {
 		CDBG("WT low_flash_current[%d] = %d\n", i, curr);
 		if (flash_ctrl_wt->torch_trigger[i]) {
@@ -632,7 +630,7 @@ int32_t wt_flash_flashlight(bool boolean)
 	}
 	return 0;
 }
-
+*/
 static int32_t msm_flash_high(
 	struct msm_flash_ctrl_t *flash_ctrl,
 	struct msm_flash_cfg_data_t *flash_data)
@@ -642,7 +640,7 @@ static int32_t msm_flash_high(
 	int32_t i = 0;
 
 	/* Turn off torch triggers */
-	for (i = 0; i < flash_ctrl->torch_num_sources - 1; i++)
+	for (i = 0; i < flash_ctrl->torch_num_sources; i++)
 		if (flash_ctrl->torch_trigger[i])
 			led_trigger_event(flash_ctrl->torch_trigger[i], 0);
 
@@ -1189,7 +1187,6 @@ static int32_t msm_flash_platform_probe(struct platform_device *pdev)
 	if (flash_ctrl->flash_driver_type == FLASH_DRIVER_PMIC)
 		rc = msm_torch_create_classdev(pdev, flash_ctrl);
 
-	flash_ctrl_wt = flash_ctrl;
 	CDBG("probe success\n");
 	return rc;
 }

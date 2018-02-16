@@ -17,6 +17,7 @@
 #include "camera.h"
 #include "msm_cci.h"
 #include "msm_camera_dt_util.h"
+#include <linux/hardware_info.h>
 
 /* Logging macro */
 #undef CDBG
@@ -769,12 +770,9 @@ int32_t msm_sensor_driver_probe(void *setting,
 		 */
 		if (slave_info->sensor_id_info.sensor_id ==
 			s_ctrl->sensordata->cam_slave_info->
-				sensor_id_info.sensor_id &&
-			!(strcmp(slave_info->sensor_name,
-			s_ctrl->sensordata->cam_slave_info->sensor_name))) {
-			pr_err("slot%d: sensor name: %s sensor id%d already probed\n",
+				sensor_id_info.sensor_id) {
+			pr_err("slot%d: sensor id%d already probed\n",
 				slave_info->camera_id,
-				slave_info->sensor_name,
 				s_ctrl->sensordata->cam_slave_info->
 					sensor_id_info.sensor_id);
 			msm_sensor_fill_sensor_info(s_ctrl,
@@ -952,12 +950,9 @@ CSID_TG:
 	s_ctrl->sensordata->cam_slave_info = slave_info;
 
 	msm_sensor_fill_sensor_info(s_ctrl, probed_info, entity_name);
+	hardwareinfo_set_prop(probed_info->position==BACK_CAMERA_B
+						?HARDWARE_BACK_CAM:HARDWARE_FRONT_CAM,probed_info->sensor_name);
 
-	/*
-	 * Set probe succeeded flag to 1 so that no other camera shall
-	 * probed on this slot
-	 */
-	s_ctrl->is_probe_succeed = 1;
 	return rc;
 
 camera_power_down:
@@ -1111,7 +1106,6 @@ static int32_t msm_sensor_driver_parse(struct msm_sensor_ctrl_t *s_ctrl)
 	if (!s_ctrl->msm_sensor_mutex) {
 		pr_err("failed: no memory msm_sensor_mutex %pK",
 			s_ctrl->msm_sensor_mutex);
-		rc = -ENOMEM;
 		goto FREE_SENSOR_I2C_CLIENT;
 	}
 
