@@ -18,10 +18,16 @@
 #define ISP_META_CHANNEL_BIT  (0x10000 << 3)
 #define ISP_SCRATCH_BUF_BIT   (0x10000 << 4)
 #define ISP_OFFLINE_STATS_BIT (0x10000 << 5)
+#ifndef CONFIG_MACH_CMCC_MSM8953
 #define ISP_SVHDR_IN_BIT      (0x10000 << 6) /* RDI hw stream for SVHDR */
 #define ISP_SVHDR_OUT_BIT     (0x10000 << 7) /* SVHDR output bufq stream*/
+#endif
 
 #define ISP_STATS_STREAM_BIT  0x80000000
+
+#ifndef CONFIG_MACH_CMCC_MSM8953
+#define VFE_HW_LIMIT 1
+#endif
 
 struct msm_vfe_cfg_cmd_list;
 
@@ -330,11 +336,22 @@ enum msm_vfe_axi_stream_cmd {
 	STOP_IMMEDIATELY,
 };
 
+#ifndef CONFIG_MACH_CMCC_MSM8953
+enum msm_vfe_hw_state {
+	HW_STATE_NONE,
+	HW_STATE_SLEEP,
+	HW_STATE_AWAKE,
+};
+#endif
+
 struct msm_vfe_axi_stream_cfg_cmd {
 	uint8_t num_streams;
 	uint32_t stream_handle[VFE_AXI_SRC_MAX];
 	enum msm_vfe_axi_stream_cmd cmd;
 	uint8_t sync_frame_id_src;
+#ifndef CONFIG_MACH_CMCC_MSM8953
+	enum msm_vfe_hw_state hw_state;
+#endif
 };
 
 enum msm_vfe_axi_stream_update_type {
@@ -373,12 +390,14 @@ struct msm_vfe_axi_stream_cfg_update_info {
 	struct msm_isp_sw_framskip sw_skip_info;
 };
 
+#ifndef CONFIG_MACH_CMCC_MSM8953
 struct msm_vfe_axi_stream_cfg_update_info_req_frm {
 	uint32_t stream_handle;
 	uint32_t user_stream_id;
 	uint32_t frame_id;
 	uint32_t buf_index;
 };
+#endif
 
 struct msm_vfe_axi_halt_cmd {
 	uint32_t stop_camif;
@@ -402,11 +421,16 @@ struct msm_vfe_axi_stream_update_cmd {
 	 * For backward compatibility, ensure 1st member of any struct
 	 * in union below is uint32_t stream_handle.
 	 */
+#ifndef CONFIG_MACH_CMCC_MSM8953
 	union {
 		struct msm_vfe_axi_stream_cfg_update_info
 					update_info[MSM_ISP_STATS_MAX];
 		struct msm_vfe_axi_stream_cfg_update_info_req_frm req_frm_ver2;
 	};
+#else
+	struct msm_vfe_axi_stream_cfg_update_info
+					update_info[MSM_ISP_STATS_MAX];
+#endif
 };
 
 struct msm_vfe_smmu_attach_cmd {
@@ -454,6 +478,9 @@ enum msm_vfe_reg_cfg_type {
 	VFE_HW_UPDATE_UNLOCK,
 	SET_WM_UB_SIZE,
 	SET_UB_POLICY,
+#ifndef CONFIG_MACH_CMCC_MSM8953
+	GET_VFE_HW_LIMIT,
+#endif
 };
 
 struct msm_vfe_cfg_cmd2 {
@@ -876,6 +903,10 @@ enum msm_isp_ioctl_cmd_code {
 	MSM_ISP_UNMAP_BUF,
 	MSM_ISP_FETCH_ENG_MULTI_PASS_START,
 	MSM_ISP_MAP_BUF_START_MULTI_PASS_FE,
+#ifndef CONFIG_MACH_CMCC_MSM8953
+	MSM_ISP_CFG_HW_STATE,
+	MSM_ISP_AHB_CLK_CFG,
+#endif
 };
 
 #define VIDIOC_MSM_VFE_REG_CFG \
@@ -988,4 +1019,5 @@ enum msm_isp_ioctl_cmd_code {
 #define VIDIOC_MSM_ISP_MAP_BUF_START_MULTI_PASS_FE \
 	_IOWR('V', MSM_ISP_MAP_BUF_START_MULTI_PASS_FE, \
 		struct msm_vfe_fetch_eng_multi_pass_start)
+
 #endif /* __MSMB_ISP__ */
