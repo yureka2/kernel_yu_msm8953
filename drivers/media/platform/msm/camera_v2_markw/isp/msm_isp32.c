@@ -1,4 +1,4 @@
-/* Copyright (c) 2013-2015, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2013-2016, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -861,7 +861,7 @@ static void msm_vfe32_cfg_fetch_engine(struct vfe_device *vfe_dev,
 	return;
 }
 
-static void msm_vfe32_cfg_camif(struct vfe_device *vfe_dev,
+static void msm_vfe32_cfg_camif (struct vfe_device *vfe_dev,
 	struct msm_vfe_pix_cfg *pix_cfg)
 {
 	uint16_t first_pixel, last_pixel, first_line, last_line;
@@ -1514,6 +1514,7 @@ struct msm_vfe_hardware_info vfe32_hw_info = {
 			.get_overflow_mask = msm_vfe32_get_overflow_mask,
 			.is_module_cfg_lock_needed =
 				msm_vfe32_is_module_cfg_lock_needed,
+			.ahb_clk_cfg = NULL,
 		},
 		.stats_ops = {
 			.get_stats_idx = msm_vfe32_get_stats_idx,
@@ -1531,6 +1532,7 @@ struct msm_vfe_hardware_info vfe32_hw_info = {
 			.get_wm_mask = msm_vfe32_stats_get_wm_mask,
 			.get_frame_id = msm_vfe32_stats_get_frame_id,
 			.get_pingpong_status = msm_vfe32_get_pingpong_status,
+			.enable_stats_wm = NULL,
 		},
 	},
 	.dmi_reg_offset = 0x5A0,
